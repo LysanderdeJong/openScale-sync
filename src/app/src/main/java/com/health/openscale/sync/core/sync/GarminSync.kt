@@ -276,9 +276,8 @@ class GarminSync(
                 muscleMassKg = kg("MUSCLE"),
                 visceralFatRating = value("VISCERAL_FAT")?.value?.roundToInt()?.takeIf { it in 1..59 },
                 bmi = value("BMI")?.value?.toDouble(),
-                // Body age; the identity scale drivers share for it (ble.metabolic_age).
-                metabolicAge = m.values.firstOrNull { it.identity == "ble.metabolic_age" }
-                    ?.value?.roundToInt()?.takeIf { it in 1..254 },
+                // No metabolic age: Garmin Connect stores the FIT years as milliseconds and then
+                // shows them as years (25 -> "788,923,150,000 years", seen 2026-11).
             )
         }
 

@@ -91,7 +91,7 @@ class GarminSyncTest {
         assertEquals(40.0, w.muscleMassKg!!, 1e-4)   // 50 % of 80 kg
         assertEquals(7, w.visceralFatRating)
         assertEquals(24.7, w.bmi!!, 1e-4)
-        assertEquals(25, w.metabolicAge)
+        assertNull(w.metabolicAge) // Garmin Connect mis-renders it, so it is never sent
         assertEquals(m.date, w.timestamp)
     }
 
