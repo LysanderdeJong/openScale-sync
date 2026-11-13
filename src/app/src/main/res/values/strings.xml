@@ -208,4 +208,16 @@
     <string name="disclosure_accept">Accept</string>
     <string name="disclosure_decline">Not now</string>
     <string name="rationale_privacy_url" translatable="false">https://github.com/oliexdev/openScale-sync/wiki/Privacy-Policy</string>
+    <string name="garmin_successful_connected_text">Successfully connected to Garmin Connect</string>
+    <string name="garmin_email_title">Garmin email</string>
+    <string name="garmin_password_title">Password</string>
+    <string name="garmin_mfa_code_title">Verification code (from email or authenticator)</string>
+    <string name="garmin_login_button">Log in</string>
+    <string name="garmin_verify_button">Verify code</string>
+    <string name="garmin_logout_button">Log out</string>
+    <string name="garmin_login_success">Logged in to Garmin Connect</string>
+    <string name="garmin_login_failed">Garmin Connect login failed</string>
+    <string name="garmin_logged_in_status">Logged in as %1$s</string>
+    <string name="garmin_not_logged_in">Not logged in — please log in</string>
+    <string name="garmin_unofficial_note">Uses the unofficial Garmin Connect login, like the Garmin Connect app. Only new measurements are uploaded; edits and deletions are not mirrored. Your password is not stored.</string>
 </resources>

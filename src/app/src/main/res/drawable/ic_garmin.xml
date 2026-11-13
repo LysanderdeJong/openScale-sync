@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="90dp"
+    android:height="90dp"
+    android:viewportWidth="90"
+    android:viewportHeight="90">
+  <!-- Generic upward triangle (not the Garmin trademark logo). -->
+  <path
+      android:pathData="M45,14L78,72L12,72Z M45,28L24,64L66,64Z"
+      android:fillType="evenOdd"
+      android:fillColor="#000000"/>
+</vector>

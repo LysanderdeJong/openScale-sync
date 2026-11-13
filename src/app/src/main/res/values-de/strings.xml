@@ -206,4 +206,16 @@
     <string name="disclosure_how">Diese Daten werden ausschließlich für diese Synchronisation verwendet. Sie bleiben auf deinem Gerät, abgesehen von den Diensten, die du selbst aktivierst, und werden nie für Werbung genutzt, verkauft oder an Dritte weitergegeben.</string>
     <string name="disclosure_accept">Zustimmen</string>
     <string name="disclosure_decline">Jetzt nicht</string>
+    <string name="garmin_successful_connected_text">Erfolgreich mit Garmin Connect verbunden.</string>
+    <string name="garmin_email_title">Garmin-E-Mail</string>
+    <string name="garmin_password_title">Passwort</string>
+    <string name="garmin_mfa_code_title">Bestätigungscode (aus E-Mail oder Authenticator)</string>
+    <string name="garmin_login_button">Anmelden</string>
+    <string name="garmin_verify_button">Code bestätigen</string>
+    <string name="garmin_logout_button">Abmelden</string>
+    <string name="garmin_login_success">Bei Garmin Connect angemeldet</string>
+    <string name="garmin_login_failed">Anmeldung bei Garmin Connect fehlgeschlagen</string>
+    <string name="garmin_logged_in_status">Angemeldet als %1$s</string>
+    <string name="garmin_not_logged_in">Nicht angemeldet – bitte anmelden</string>
+    <string name="garmin_unofficial_note">Nutzt die inoffizielle Garmin-Connect-Anmeldung wie die Garmin-Connect-App. Nur neue Messungen werden hochgeladen; Änderungen und Löschungen werden nicht übertragen. Dein Passwort wird nicht gespeichert.</string>
 </resources>
