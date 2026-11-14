@@ -219,5 +219,5 @@
     <string name="garmin_login_failed">Garmin Connect login failed</string>
     <string name="garmin_logged_in_status">Logged in as %1$s</string>
     <string name="garmin_not_logged_in">Not logged in — please log in</string>
-    <string name="garmin_unofficial_note">Uses the unofficial Garmin Connect login, like the Garmin Connect app. Only new measurements are uploaded; edits and deletions are not mirrored. Your password is not stored.</string>
+    <string name="garmin_unofficial_note">Uses the unofficial Garmin Connect login, like the Garmin Connect app. New weigh-ins are added if Garmin does not have them yet (a full sync also restores ones deleted in Garmin); edits and deletions are not mirrored. Your password is not stored.</string>
 </resources>

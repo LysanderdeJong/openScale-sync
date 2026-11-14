@@ -114,7 +114,24 @@ class GarminSync(
         http.newCall(req).execute().use { resp -> resultOf(resp, "Garmin profile check") }
     }
 
-    suspend fun upload(measurement: OpenScaleMeasurement): SyncResult<Unit> = wire {
+    /**
+     * Uploads [measurement] unless Garmin already has a weigh-in at the same second, so a
+     * re-push (full sync, retry, edit) never duplicates and an entry deleted in Garmin comes back.
+     */
+    suspend fun uploadIfMissing(measurement: OpenScaleMeasurement): SyncResult<Unit> = wire {
+        val day = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ROOT).format(measurement.date)
+        val req = Request.Builder().url("$CONNECT_API/weight-service/weight/dayview/$day?includeAll=true")
+            .header("Authorization", "Bearer ${accessToken()}").header("User-Agent", USER_AGENT)
+            .header("NK", "NT").build()
+        val existing = http.newCall(req).execute().use { resp ->
+            if (!resp.isSuccessful) return@wire resultOf(resp, "Garmin weigh-in lookup")
+            weighInSeconds(resp.body.string())
+        }
+        if (measurement.date.time / 1000 in existing) SyncResult.Success(Unit)
+        else uploadNow(measurement)
+    }
+
+    private fun uploadNow(measurement: OpenScaleMeasurement): SyncResult<Unit> {
         val fit = GarminFit.encode(toWeightScale(measurement))
         val body = MultipartBody.Builder().setType(MultipartBody.FORM)
             .addFormDataPart("file", "body-composition.fit", fit.toRequestBody("application/octet-stream".toMediaType()))
@@ -123,7 +140,7 @@ class GarminSync(
             .header("Authorization", "Bearer ${accessToken()}")
             .header("Accept", "application/json,text/plain,*/*").header("User-Agent", USER_AGENT)
             .header("NK", "NT").header("Origin", "https://sso.garmin.com").build()
-        http.newCall(req).execute().use { resp -> resultOf(resp, "Garmin FIT upload") }
+        return http.newCall(req).execute().use { resp -> resultOf(resp, "Garmin FIT upload") }
     }
 
     // --- login internals -----------------------------------------------------------------
@@ -317,6 +334,15 @@ class GarminSync(
             val mac = Mac.getInstance("HmacSHA1").apply { init(SecretKeySpec(key.toByteArray(), "HmacSHA1")) }
             oauth["oauth_signature"] = Base64.getEncoder().encodeToString(mac.doFinal(base.toByteArray()))
             return "OAuth " + oauth.entries.joinToString(", ") { (k, v) -> "${percentEncode(k)}=\"${percentEncode(v)}\"" }
+        }
+
+        /** Weigh-in times (Unix seconds) from a weight-service dayview response. */
+        internal fun weighInSeconds(json: String): Set<Long> {
+            val list = runCatching { JsonParser.parseString(json).asJsonObject.getAsJsonArray("dateWeightList") }
+                .getOrNull() ?: return emptySet()
+            return list.mapNotNull { e ->
+                e.asJsonObject.get("timestampGMT")?.takeIf { !it.isJsonNull }?.asLong?.div(1000)
+            }.toSet()
         }
 
         internal fun extractCsrf(html: String): String? =

@@ -217,5 +217,5 @@
     <string name="garmin_login_failed">Anmeldung bei Garmin Connect fehlgeschlagen</string>
     <string name="garmin_logged_in_status">Angemeldet als %1$s</string>
     <string name="garmin_not_logged_in">Nicht angemeldet – bitte anmelden</string>
-    <string name="garmin_unofficial_note">Nutzt die inoffizielle Garmin-Connect-Anmeldung wie die Garmin-Connect-App. Nur neue Messungen werden hochgeladen; Änderungen und Löschungen werden nicht übertragen. Dein Passwort wird nicht gespeichert.</string>
+    <string name="garmin_unofficial_note">Nutzt die inoffizielle Garmin-Connect-Anmeldung wie die Garmin-Connect-App. Neue Messungen werden hinzugefügt, wenn Garmin sie noch nicht hat (eine vollständige Synchronisierung stellt auch in Garmin gelöschte wieder her); Änderungen und Löschungen werden nicht übertragen. Dein Passwort wird nicht gespeichert.</string>
 </resources>

@@ -88,12 +88,13 @@ class GarminService(
 
     override suspend fun insert(measurement: OpenScaleMeasurement): SyncResult<Unit> =
         if (viewModel.connectAvailable.value && viewModel.allPermissionsGranted.value)
-            garminSync.upload(measurement)
+            garminSync.uploadIfMissing(measurement)
         else SyncResult.Failure(SyncResult.ErrorType.PERMISSION_DENIED)
 
-    // ponytail: Garmin's upload only adds entries. Edits and deletes are not mirrored (re-uploading
-    // would duplicate the entry); add them via weight-service when needed.
-    override suspend fun update(measurement: OpenScaleMeasurement): SyncResult<Unit> = notMirrored("update")
+    // Add-only: an update (incl. a manual full sync) re-adds a weigh-in that is missing on Garmin,
+    // e.g. deleted there, but never touches one that exists. Deletes are never mirrored (user choice);
+    // so edits in openScale do not replace the Garmin entry either.
+    override suspend fun update(measurement: OpenScaleMeasurement): SyncResult<Unit> = insert(measurement)
     override suspend fun delete(userId: Int, date: Date): SyncResult<Unit> = notMirrored("delete")
     override suspend fun clear(userId: Int): SyncResult<Unit> = notMirrored("clear")
 

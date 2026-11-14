@@ -100,7 +100,7 @@ class GarminSyncTest {
         var sent: Request? = null
         val sync = GarminSync(validTokens(), fakeHttp { sent = it; 200 })
 
-        assertEquals(SyncResult.Success(Unit), sync.upload(measurement()))
+        assertEquals(SyncResult.Success(Unit), sync.uploadIfMissing(measurement()))
 
         val req = sent!!
         assertEquals("https://connectapi.garmin.com/upload-service/upload/.fit", req.url.toString())
@@ -114,8 +114,31 @@ class GarminSyncTest {
 
     @Test
     fun `a rejected token is reported as permission denied`() = runTest {
-        val res = GarminSync(validTokens(), fakeHttp { 401 }).upload(measurement())
+        val res = GarminSync(validTokens(), fakeHttp { 401 }).uploadIfMissing(measurement())
         assertEquals(SyncResult.ErrorType.PERMISSION_DENIED, (res as SyncResult.Failure).errorType)
+    }
+
+    @Test
+    fun `skips the upload when Garmin already has a weigh-in at that second`() = runTest {
+        val urls = mutableListOf<String>()
+        val dayview = """{"dateWeightList":[{"samplePk":1,"timestampGMT":1767943800000,"weight":80000}]}"""
+        val http = OkHttpClient.Builder().addInterceptor { chain ->
+            urls += chain.request().url.encodedPath
+            Response.Builder().request(chain.request()).protocol(Protocol.HTTP_1_1).code(200).message("x")
+                .body(dayview.toResponseBody()).build()
+        }.build()
+
+        assertEquals(SyncResult.Success(Unit), GarminSync(validTokens(), http).uploadIfMissing(measurement()))
+        assertEquals(listOf("/weight-service/weight/dayview/2026-01-09"), urls)
+    }
+
+    @Test
+    fun `reads weigh-in times from a dayview response`() {
+        assertEquals(
+            setOf(1767943800L, 1767950000L),
+            GarminSync.weighInSeconds("""{"dateWeightList":[{"timestampGMT":1767943800000},{"timestampGMT":1767950000999},{"timestampGMT":null}]}""")
+        )
+        assertEquals(emptySet<Long>(), GarminSync.weighInSeconds("{}"))
     }
 
     private fun measurement() = OpenScaleMeasurement.fromValues(
